@@ -14,6 +14,7 @@ import GameSetup from './GameSetup';
 import PlayerBidding from './PlayerBidding';
 import AuctionResults from './AuctionResults';
 import GameFinished from './GameFinished';
+import GameRulesModal from './GameRulesModal';
 
 export default function BananaAuctionGame() {
   const [gameState, setGameState] = useState<GameState>({
@@ -26,6 +27,7 @@ export default function BananaAuctionGame() {
   });
 
   const [lastBidResult, setLastBidResult] = useState<BidResult | null>(null);
+  const [isRulesModalOpen, setIsRulesModalOpen] = useState(false);
 
   const startGame = (playerCount: number, targetBananas: number) => {
     const players = createInitialPlayers(playerCount);
@@ -134,6 +136,17 @@ export default function BananaAuctionGame() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-banana-50 to-banana-100 py-8">
+      {/* 게임 규칙 버튼 */}
+      <div className="fixed top-4 right-4 z-40">
+        <button
+          onClick={() => setIsRulesModalOpen(true)}
+          className="bg-white hover:bg-gray-50 text-gray-700 font-bold w-12 h-12 rounded-full shadow-lg border-2 border-gray-200 flex items-center justify-center text-xl transition duration-200"
+          title="게임 규칙 보기"
+        >
+          ?
+        </button>
+      </div>
+
       <div className="container mx-auto px-4">
         {gameState.gamePhase === 'setup' && (
           <GameSetup onStartGame={startGame} />
@@ -189,6 +202,12 @@ export default function BananaAuctionGame() {
             </div>
           </div>
         )}
+
+        {/* 게임 규칙 모달 */}
+        <GameRulesModal 
+          isOpen={isRulesModalOpen} 
+          onClose={() => setIsRulesModalOpen(false)} 
+        />
       </div>
     </div>
   );
