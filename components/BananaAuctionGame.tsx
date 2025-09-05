@@ -68,7 +68,7 @@ export default function BananaAuctionGame() {
       let updatedPlayers = updatePlayerBananas(gameState.players, result, gameState.round);
       
       // 1등이 파산한 경우 새로운 1등, 2등을 정하고 재계산
-      const { players: finalPlayers, result: finalResult } = recalculateAuctionAfterBankruptcy(updatedPlayers, result, gameState.round);
+      const { players: finalPlayers, result: finalResult } = recalculateAuctionAfterBankruptcy(updatedPlayers, result, gameState.round, gameState.auctionItem);
       updatedPlayers = finalPlayers;
       
       const winner = checkWinner(updatedPlayers, gameState.targetBananas);

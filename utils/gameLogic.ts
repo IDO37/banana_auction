@@ -41,7 +41,7 @@ export const processBids = (players: Player[], auctionItem: number, currentRound
   
   // 2등 플레이어가 받는 바나나 개수 (각자)
   const bananasToSecondPerPlayer = secondPlacePlayers.length > 0 ? 
-    Math.floor((firstPlaceBid - secondPlaceBid) / secondPlacePlayers.length) : 0;
+    Math.floor((firstPlaceBid - secondPlaceBid)) : 0;
   
   return {
     firstPlace: firstPlacePlayers[0], // 대표 1등 (표시용)
@@ -80,7 +80,7 @@ export const updatePlayerBananas = (players: Player[], result: BidResult, curren
   });
 };
 
-export const recalculateAuctionAfterBankruptcy = (players: Player[], originalResult: BidResult, currentRound: number): { players: Player[], result: BidResult } => {
+export const recalculateAuctionAfterBankruptcy = (players: Player[], originalResult: BidResult, currentRound: number, auctionItem: number): { players: Player[], result: BidResult } => {
   // 공동 1등 중 파산한 플레이어가 있는지 확인
   const bankruptFirstPlacePlayers = players.filter(p => 
     originalResult.firstPlacePlayers.some(fp => fp.id === p.id) && p.isBankrupt
@@ -97,11 +97,34 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
     return { players, result: originalResult };
   }
 
-  // 새로운 경매 결과 계산
-  const newResult = processBids(activePlayers, originalResult.bananasToFirst, currentRound);
+  // 새로운 경매 결과 계산 (매물을 올바르게 전달)
+  const newResult = processBids(activePlayers, auctionItem, currentRound);
   
-  // 새로운 결과로 플레이어 바나나 업데이트
-  const updatedPlayers = updatePlayerBananas(players, newResult, currentRound);
+  // 새로운 결과로 플레이어 바나나 업데이트 (파산한 플레이어는 제외하고 계산)
+  const updatedPlayers = players.map(player => {
+    // 파산한 플레이어는 그대로 유지
+    if (player.isBankrupt && player.bankruptRound === currentRound) {
+      return player;
+    }
+    
+    let newBananas = player.bananas;
+    
+    // 새로운 1등 플레이어들 처리
+    if (newResult.firstPlacePlayers.some(p => p.id === player.id)) {
+      newBananas = player.bananas + newResult.bananasToFirst;
+      
+      if (newBananas < 0) {
+        newBananas = 0;
+        return { ...player, bananas: newBananas, isBankrupt: true, bankruptRound: currentRound };
+      }
+    } 
+    // 새로운 2등 플레이어들 처리
+    else if (newResult.secondPlacePlayers.some(p => p.id === player.id)) {
+      newBananas = player.bananas + newResult.bananasToSecond;
+    }
+    
+    return { ...player, bananas: newBananas };
+  });
 
   return { players: updatedPlayers, result: newResult };
 };
