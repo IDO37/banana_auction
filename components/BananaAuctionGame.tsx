@@ -153,15 +153,16 @@ export default function BananaAuctionGame() {
         )}
 
         {gameState.gamePhase === 'bidding' && (
-          <PlayerBidding
-            players={gameState.players}
-            onBidChange={handleBidChange}
-            onNameChange={handleNameChange}
-            onStartAuction={startAuction}
-            auctionItem={gameState.auctionItem}
-            canStartAuction={canStartAuction}
-            round={gameState.round}
-          />
+                  <PlayerBidding
+          players={gameState.players}
+          onBidChange={handleBidChange}
+          onNameChange={handleNameChange}
+          onStartAuction={startAuction}
+          auctionItem={gameState.auctionItem}
+          canStartAuction={canStartAuction}
+          round={gameState.round}
+          targetBananas={gameState.targetBananas}
+        />
         )}
 
         {gameState.gamePhase === 'results' && lastBidResult && (

@@ -10,6 +10,7 @@ interface PlayerBiddingProps {
   auctionItem: number;
   canStartAuction: boolean;
   round: number;
+  targetBananas: number;
 }
 
 export default function PlayerBidding({ 
@@ -19,13 +20,14 @@ export default function PlayerBidding({
   onStartAuction, 
   auctionItem,
   canStartAuction,
-  round
+  round,
+  targetBananas
 }: PlayerBiddingProps) {
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
-          🍌 라운드 {round} 바나나 경매
+          🍌 바나나 경매
         </h2>
         <div className="bg-banana-100 border-2 border-banana-300 rounded-lg p-4 mb-4">
           <p className="text-lg text-gray-700 mb-2">이번 라운드 매물</p>
@@ -33,6 +35,18 @@ export default function PlayerBidding({
             {auctionItem}개
           </p>
           <p className="text-sm text-gray-600 mt-1">바나나</p>
+        </div>
+        <div className="bg-gray-100 border-2 border-gray-300 rounded-lg p-4">
+          <div className="grid grid-cols-2 gap-4 text-center">
+            <div>
+              <p className="text-sm text-gray-600 mb-1">현재 라운드</p>
+              <p className="text-xl font-bold text-gray-800">{round}</p>
+            </div>
+            <div>
+              <p className="text-sm text-gray-600 mb-1">목표 바나나</p>
+              <p className="text-xl font-bold text-gray-800">{targetBananas}개</p>
+            </div>
+          </div>
         </div>
       </div>
 

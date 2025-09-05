@@ -90,15 +90,39 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
     return { players, result: originalResult };
   }
 
-  // 파산한 1등을 제외한 플레이어들로 새로운 경매 진행
+  // 파산한 1등을 제외한 플레이어들로 새로운 1등, 2등 결정
   const activePlayers = players.filter(p => p.bid > 0 && !(p.isBankrupt && p.bankruptRound === currentRound));
   
   if (activePlayers.length < 2) {
     return { players, result: originalResult };
   }
 
-  // 새로운 경매 결과 계산 (매물을 올바르게 전달)
-  const newResult = processBids(activePlayers, auctionItem, currentRound);
+  // 새로운 1등, 2등 결정 (호가 기준으로 정렬)
+  const sortedPlayers = [...activePlayers].sort((a, b) => b.bid - a.bid);
+  const newFirstPlaceBid = sortedPlayers[0].bid;
+  const newFirstPlacePlayers = sortedPlayers.filter(p => p.bid === newFirstPlaceBid);
+  const remainingPlayers = sortedPlayers.filter(p => p.bid !== newFirstPlaceBid);
+  const newSecondPlacePlayers = remainingPlayers.filter(p => p.bid > 0);
+  const newSecondPlaceBid = newSecondPlacePlayers[0]?.bid || 0;
+
+  // 새로운 바나나 분배 계산
+  const totalBananasToSecond = (newFirstPlaceBid - newSecondPlaceBid) * newSecondPlacePlayers.length;
+  const totalBananasToFirst = auctionItem - totalBananasToSecond;
+  const bananasToFirstPerPlayer = Math.floor(totalBananasToFirst / newFirstPlacePlayers.length);
+  const bananasToSecondPerPlayer = newSecondPlacePlayers.length > 0 ? 
+    Math.floor((newFirstPlaceBid - newSecondPlaceBid)) : 0;
+
+  // 새로운 결과 생성
+  const newResult: BidResult = {
+    firstPlace: newFirstPlacePlayers[0],
+    secondPlace: newSecondPlacePlayers[0] || null,
+    firstPlaceBid: newFirstPlaceBid,
+    secondPlaceBid: newSecondPlaceBid,
+    bananasToSecond: bananasToSecondPerPlayer,
+    bananasToFirst: bananasToFirstPerPlayer,
+    firstPlacePlayers: newFirstPlacePlayers,
+    secondPlacePlayers: newSecondPlacePlayers
+  };
   
   // 새로운 결과로 플레이어 바나나 업데이트 (파산한 플레이어는 제외하고 계산)
   const updatedPlayers = players.map(player => {
