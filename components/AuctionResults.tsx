@@ -37,7 +37,7 @@ export default function AuctionResults({
                   {player.name}: {result.firstPlaceBid}개
                 </p>
                 <p className="text-xs text-gray-500 mt-1">
-                  바나나: {player.bananas - result.bananasToFirst}개 → {player.bananas}개
+                  바나나: {player.bananas - result.bananasToFirst + result.bananasToSecond}개 → {player.bananas}개
                 </p>
               </div>
             ))}
@@ -88,15 +88,10 @@ export default function AuctionResults({
           {players.map((player) => (
             <div 
               key={player.id} 
-              className={`p-4 rounded-lg border-2 ${
-                player.isBankrupt 
-                  ? 'border-red-300 bg-red-50' 
-                  : 'border-gray-200 bg-gray-50'
-              }`}
+              className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50"
             >
               <h4 className="font-bold text-lg mb-2">
                 {player.name}
-                {player.isBankrupt && <span className="text-red-500 ml-2">(파산)</span>}
               </h4>
               
               <div className="space-y-1">

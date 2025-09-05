@@ -54,11 +54,7 @@ export default function PlayerBidding({
         {players.map((player) => (
           <div 
             key={player.id} 
-            className={`p-4 rounded-lg border-2 ${
-              player.isBankrupt 
-                ? 'border-red-300 bg-red-50' 
-                : 'border-gray-200 bg-gray-50'
-            }`}
+            className="p-4 rounded-lg border-2 border-gray-200 bg-gray-50"
           >
             <div className="mb-2">
               <input
@@ -69,7 +65,6 @@ export default function PlayerBidding({
                 className="font-bold text-lg bg-transparent border-none outline-none focus:bg-white focus:border focus:border-gray-300 rounded px-1 py-1 w-full"
                 maxLength={10}
               />
-              {player.isBankrupt && <span className="text-red-500 text-sm">(파산)</span>}
             </div>
             
             <div className="mb-3">
@@ -92,12 +87,6 @@ export default function PlayerBidding({
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-banana-500 focus:border-transparent"
                 disabled={player.isBankrupt && player.bankruptRound === round}
               />
-              {player.isBankrupt && player.bankruptRound === round && (
-                <p className="text-xs text-red-500 mt-1">이번 라운드 파산 - 경매 제외</p>
-              )}
-              {player.isBankrupt && player.bankruptRound !== round && (
-                <p className="text-xs text-orange-500 mt-1">이전 라운드 파산 - 재참여 가능</p>
-              )}
             </div>
           </div>
         ))}

@@ -56,7 +56,6 @@ export default function GameFinished({ winner, players, targetBananas, onNewGame
                   </span>
                   <span className="font-bold text-lg">
                     {player.name}
-                    {player.isBankrupt && <span className="text-red-500 ml-2">(파산)</span>}
                     {isQualified && <span className="text-green-600 ml-2">(목표 달성)</span>}
                   </span>
                 </div>
