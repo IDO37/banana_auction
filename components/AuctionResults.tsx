@@ -91,7 +91,9 @@ export default function AuctionResults({
                 </div>
                 <div>
                   <span className="text-sm text-gray-600">입찰 호가: </span>
-                  <span className="font-bold">{player.bid}개</span>
+                  <span className="font-bold">
+                    {result.allPlayerBids.find(b => b.playerId === player.id)?.bid || 0}개
+                  </span>
                 </div>
               </div>
             </div>

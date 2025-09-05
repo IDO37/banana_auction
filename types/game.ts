@@ -25,4 +25,5 @@ export interface BidResult {
   bananasToFirst: number;
   firstPlacePlayers: Player[];
   secondPlacePlayers: Player[];
+  allPlayerBids: { playerId: string; bid: number }[]; // 모든 플레이어의 실제 입찰 정보
 }

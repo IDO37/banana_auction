@@ -51,7 +51,8 @@ export const processBids = (players: Player[], auctionItem: number, currentRound
     bananasToSecond: bananasToSecondPerPlayer,
     bananasToFirst: bananasToFirstPerPlayer,
     firstPlacePlayers, // 공동 1등 플레이어들
-    secondPlacePlayers // 공동 2등 플레이어들
+    secondPlacePlayers, // 공동 2등 플레이어들
+    allPlayerBids: players.map(p => ({ playerId: p.id, bid: p.bid })) // 모든 플레이어의 실제 입찰 정보
   };
 };
 
@@ -121,7 +122,8 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
     bananasToSecond: bananasToSecondPerPlayer,
     bananasToFirst: bananasToFirstPerPlayer,
     firstPlacePlayers: newFirstPlacePlayers,
-    secondPlacePlayers: newSecondPlacePlayers
+    secondPlacePlayers: newSecondPlacePlayers,
+    allPlayerBids: players.map(p => ({ playerId: p.id, bid: p.bid })) // 모든 플레이어의 실제 입찰 정보
   };
   
   // 새로운 결과로 플레이어 바나나 업데이트 (파산한 플레이어는 제외하고 계산)
