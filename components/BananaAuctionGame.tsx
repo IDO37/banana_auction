@@ -7,6 +7,7 @@ import {
   calculateAuctionItem, 
   processBids, 
   updatePlayerBananas, 
+  recalculateAuctionAfterBankruptcy,
   checkWinner 
 } from '@/utils/gameLogic';
 import GameSetup from './GameSetup';
@@ -62,10 +63,15 @@ export default function BananaAuctionGame() {
   const startAuction = () => {
     try {
       const result = processBids(gameState.players, gameState.auctionItem, gameState.round);
-      const updatedPlayers = updatePlayerBananas(gameState.players, result, gameState.round);
+      let updatedPlayers = updatePlayerBananas(gameState.players, result, gameState.round);
+      
+      // 1등이 파산한 경우 새로운 1등, 2등을 정하고 재계산
+      const { players: finalPlayers, result: finalResult } = recalculateAuctionAfterBankruptcy(updatedPlayers, result, gameState.round);
+      updatedPlayers = finalPlayers;
+      
       const winner = checkWinner(updatedPlayers, gameState.targetBananas);
       
-      setLastBidResult(result);
+      setLastBidResult(finalResult);
       
       if (winner) {
         setGameState(prev => ({

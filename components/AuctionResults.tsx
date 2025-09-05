@@ -28,23 +28,41 @@ export default function AuctionResults({
         <h3 className="font-bold text-lg mb-3 text-banana-800">경매 결과 요약</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <p className="text-sm text-gray-600">1등 (최고 호가)</p>
-            <p className="font-bold text-banana-600">
-              {result.firstPlace.name}: {result.firstPlaceBid}개
+            <p className="text-sm text-gray-600">
+              1등 (최고 호가) {result.firstPlacePlayers.length > 1 && `(${result.firstPlacePlayers.length}명 공동)`}
             </p>
+            {result.firstPlacePlayers.map((player, index) => (
+              <div key={player.id} className="mb-2">
+                <p className="font-bold text-banana-600">
+                  {player.name}: {result.firstPlaceBid}개
+                </p>
+                <p className="text-xs text-gray-500 mt-1">
+                  바나나: {player.bananas - result.bananasToFirst}개 → {player.bananas}개
+                </p>
+              </div>
+            ))}
           </div>
-          {result.secondPlace && (
+          {result.secondPlacePlayers.length > 0 && (
             <div>
-              <p className="text-sm text-gray-600">2등</p>
-              <p className="font-bold text-banana-600">
-                {result.secondPlace.name}: {result.secondPlaceBid}개
+              <p className="text-sm text-gray-600">
+                2등 {result.secondPlacePlayers.length > 1 && `(${result.secondPlacePlayers.length}명 공동)`}
               </p>
+              {result.secondPlacePlayers.map((player, index) => (
+                <div key={player.id} className="mb-2">
+                  <p className="font-bold text-banana-600">
+                    {player.name}: {result.secondPlaceBid}개
+                  </p>
+                  <p className="text-xs text-gray-500 mt-1">
+                    바나나: {player.bananas - result.bananasToSecond}개 → {player.bananas}개
+                  </p>
+                </div>
+              ))}
             </div>
           )}
         </div>
         
         <div className="mt-4 pt-4 border-t border-banana-200">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
             <div>
               <p className="text-gray-600">이번 라운드 매물</p>
               <p className="font-bold">{auctionItem}개</p>
@@ -52,10 +70,6 @@ export default function AuctionResults({
             <div>
               <p className="text-gray-600">2등에게 지급</p>
               <p className="font-bold text-green-600">+{result.bananasToSecond}개</p>
-            </div>
-            <div>
-              <p className="text-gray-600">1등이 획득</p>
-              <p className="font-bold text-blue-600">+{result.bananasToFirst}개</p>
             </div>
             <div>
               <p className="text-gray-600">1등 손익</p>

@@ -69,34 +69,6 @@ export default function GameFinished({ winner, players, targetBananas, onNewGame
         </div>
       </div>
 
-      {/* 게임 통계 */}
-      <div className="bg-gray-50 rounded-lg p-4 mb-6">
-        <h4 className="font-bold text-lg mb-3 text-gray-800">게임 통계</h4>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <p className="text-gray-600">총 플레이어 수</p>
-            <p className="font-bold">{players.length}명</p>
-          </div>
-          <div>
-            <p className="text-gray-600">파산한 플레이어</p>
-            <p className="font-bold text-red-600">
-              {players.filter(p => p.isBankrupt).length}명
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-600">총 바나나</p>
-            <p className="font-bold">
-              {players.reduce((sum, p) => sum + p.bananas, 0)}개
-            </p>
-          </div>
-          <div>
-            <p className="text-gray-600">평균 바나나</p>
-            <p className="font-bold">
-              {Math.round(players.reduce((sum, p) => sum + p.bananas, 0) / players.length)}개
-            </p>
-          </div>
-        </div>
-      </div>
 
       <div className="text-center">
         <button

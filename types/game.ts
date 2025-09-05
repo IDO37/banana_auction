@@ -23,4 +23,6 @@ export interface BidResult {
   secondPlaceBid: number;
   bananasToSecond: number;
   bananasToFirst: number;
+  firstPlacePlayers: Player[];
+  secondPlacePlayers: Player[];
 }
