@@ -21,11 +21,14 @@ export const processBids = (players: Player[], auctionItem: number, currentRound
   const sortedPlayers = [...activePlayers].sort((a, b) => b.bid - a.bid);
   
   const firstPlaceBid = sortedPlayers[0].bid;
-  const secondPlaceBid = sortedPlayers[1]?.bid || 0;
   
-  // 공동 1등, 2등 플레이어들 찾기
+  // 공동 1등 플레이어들 찾기
   const firstPlacePlayers = sortedPlayers.filter(p => p.bid === firstPlaceBid);
-  const secondPlacePlayers = sortedPlayers.filter(p => p.bid === secondPlaceBid && p.bid > 0);
+  
+  // 공동 1등을 제외한 플레이어들 중에서 2등 찾기
+  const remainingPlayers = sortedPlayers.filter(p => p.bid !== firstPlaceBid);
+  const secondPlacePlayers = remainingPlayers.filter(p => p.bid > 0);
+  const secondPlaceBid = secondPlacePlayers[0]?.bid || 0;
   
   // 1등이 2등에게 줄 바나나 개수 (총합)
   const totalBananasToSecond = (firstPlaceBid - secondPlaceBid) * secondPlacePlayers.length;
