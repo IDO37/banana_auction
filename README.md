@@ -1,21 +1,87 @@
-# Vue 3 + Vite
+# 🍌 바나나 경매 게임
 
-This template should help get you started developing with Vue 3 in Vite. The template uses Vue 3 `<script setup>` SFCs, check out the [script setup docs](https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup) to learn more.
+바나나 경매 게임은 전략적인 경매 게임입니다. 플레이어들은 비밀리에 호가를 입력하고, 가장 높은 호가자가 바나나를 획득합니다.
 
-While this project uses Vue.js, Vite supports many popular JS frameworks. [See all the supported frameworks](https://vitejs.dev/guide/#scaffolding-your-first-vite-project).
+## 🎮 게임 규칙
 
-## Deploy Your Own
+### 초기 설정
+- 플레이어 수: 2-10명 (기본 2명)
+- 시작 바나나: 각 플레이어 10개
+- 목표 바나나: 설정 가능 (기본 50개)
 
-Deploy your own Vite project with Vercel.
+### 경매 규칙
+1. **매물 결정**: 현재 가장 많은 바나나를 가진 플레이어의 보유 수가 매물이 됩니다.
+2. **비밀 호가**: 각 플레이어가 비밀리에 호가를 입력합니다.
+3. **결과 계산**:
+   - 1등(최고 호가자): `(1등 호가 - 2등 호가)` 만큼 2등에게 바나나를 지급
+   - 2등: 받은 바나나만큼 보유량 증가
+   - 1등: 나머지 `(매물 - (1등 호가 - 2등 호가))` 만큼 획득
+4. **파산 처리**: 1등이 지급할 바나나가 부족하면 파산(바나나 0개) 처리
+5. **승리 조건**: 목표 바나나 개수에 도달하면 즉시 승리
 
-[![Deploy with Vercel](https://vercel.com/button)]([https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/framework-boilerplates/vite&template=vite](https://vercel.com/new/clone?demo-description=Vite%2FVue.js%20site%20that%20can%20be%20deployed%20to%20Vercel&demo-image=%2F%2Fimages.ctfassets.net%2Fe5382hct74si%2F2T4BUF3mEBKPJF3jcjU6nS%2F0d4a02e7c48091d13814a4ab513e8734%2FScreen_Shot_2022-04-13_at_10.05.56_PM.png&demo-title=Vite%20-%20Vue&demo-url=https%3A%2F%2Fvite-vue-template.vercel.app%2F&from=templates&project-name=Vite%20-%20Vue&repository-name=vite-vue&repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fvercel%2Ftree%2Fmain%2Fexamples%2Fvite&skippable-integrations=1))
+## 🚀 실행 방법
 
-_Live Example: https://vite-vue-template.vercel.app_
+### 로컬 개발
+```bash
+# 의존성 설치
+npm install
 
-### Deploying From Your Terminal
-
-You can deploy your new Vite project with a single command from your terminal using [Vercel CLI](https://vercel.com/download):
-
-```shell
-$ vercel
+# 개발 서버 실행
+npm run dev
 ```
+
+### Vercel 배포
+1. GitHub에 코드 푸시
+2. Vercel에서 프로젝트 연결
+3. 자동 배포 완료
+
+## 🛠 기술 스택
+
+- **Frontend**: Next.js 14 (App Router)
+- **Styling**: TailwindCSS
+- **Language**: TypeScript
+- **Deployment**: Vercel
+
+## 📁 프로젝트 구조
+
+```
+banana_auction/
+├── app/                    # Next.js App Router
+│   ├── globals.css        # 전역 스타일
+│   ├── layout.tsx         # 루트 레이아웃
+│   └── page.tsx           # 메인 페이지
+├── components/            # React 컴포넌트
+│   ├── BananaAuctionGame.tsx  # 메인 게임 컴포넌트
+│   ├── GameSetup.tsx      # 게임 설정
+│   ├── PlayerBidding.tsx  # 호가 입력
+│   ├── AuctionResults.tsx # 경매 결과
+│   └── GameFinished.tsx   # 게임 종료
+├── types/                 # TypeScript 타입 정의
+│   └── game.ts
+├── utils/                 # 유틸리티 함수
+│   └── gameLogic.ts
+└── public/               # 정적 파일
+```
+
+## 🎯 주요 기능
+
+- ✅ 플레이어 수 설정 (2-10명)
+- ✅ 목표 바나나 개수 설정
+- ✅ 실시간 호가 입력
+- ✅ 경매 결과 계산 및 표시
+- ✅ 파산 처리
+- ✅ 승리 조건 체크
+- ✅ 반응형 UI (모바일/데스크톱)
+- ✅ 게임 통계 표시
+
+## 🎨 UI/UX 특징
+
+- 바나나 테마의 따뜻한 색상 팔레트
+- 직관적인 게임 진행 흐름
+- 실시간 상태 업데이트
+- 모바일 친화적 반응형 디자인
+- 명확한 결과 표시 및 피드백
+
+---
+
+🍌 **즐거운 바나나 경매 게임 되세요!** 🍌
