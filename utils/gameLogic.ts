@@ -30,18 +30,18 @@ export const processBids = (players: Player[], auctionItem: number, currentRound
   const secondPlacePlayers = remainingPlayers.filter(p => p.bid > 0);
   const secondPlaceBid = secondPlacePlayers[0]?.bid || 0;
   
-  // 1등이 2등에게 줄 바나나 개수 (총합)
-  const totalBananasToSecond = (firstPlaceBid - secondPlaceBid) * secondPlacePlayers.length;
-  
-  // 1등이 가져갈 바나나 개수 (총합)
-  const totalBananasToFirst = auctionItem - totalBananasToSecond;
-  
-  // 1등 플레이어가 받는 바나나 개수 (각자)
-  const bananasToFirstPerPlayer = Math.floor(totalBananasToFirst / firstPlacePlayers.length);
-  
-  // 2등 플레이어가 받는 바나나 개수 (각자)
+  // 1등이 2등에게 줄 바나나 개수 (각자)
   const bananasToSecondPerPlayer = secondPlacePlayers.length > 0 ? 
     Math.floor((firstPlaceBid - secondPlaceBid)) : 0;
+  
+  // 1등이 2등에게 줄 바나나 개수 (총합)
+  const totalBananasToSecond = bananasToSecondPerPlayer * secondPlacePlayers.length;
+  
+  // 1등이 가져갈 바나나 개수 (총합) = 매물
+  const totalBananasToFirst = auctionItem;
+  
+  // 1등 플레이어가 받는 바나나 개수 (각자) = 매물을 공동 1등이 나눔
+  const bananasToFirstPerPlayer = Math.floor(totalBananasToFirst / firstPlacePlayers.length);
   
   return {
     firstPlace: firstPlacePlayers[0], // 대표 1등 (표시용)
@@ -61,8 +61,8 @@ export const updatePlayerBananas = (players: Player[], result: BidResult, curren
     
     // 공동 1등 플레이어들 처리
     if (result.firstPlacePlayers.some(p => p.id === player.id)) {
-      // 1등 플레이어: 계산된 바나나 개수만큼 획득
-      newBananas = player.bananas + result.bananasToFirst;
+      // 1등 플레이어: 매물을 가져가고 2등에게 호가 차이만큼 줌
+      newBananas = player.bananas + result.bananasToFirst - result.bananasToSecond;
       
       // 파산 처리 (음수일 때만 파산 처리, 0은 정상)
       if (newBananas < 0) {
@@ -72,7 +72,7 @@ export const updatePlayerBananas = (players: Player[], result: BidResult, curren
     } 
     // 공동 2등 플레이어들 처리
     else if (result.secondPlacePlayers.some(p => p.id === player.id)) {
-      // 2등 플레이어: 계산된 바나나 개수만큼 획득
+      // 2등 플레이어: 1등으로부터 호가 차이만큼 받음
       newBananas = player.bananas + result.bananasToSecond;
     }
     
@@ -106,11 +106,11 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
   const newSecondPlaceBid = newSecondPlacePlayers[0]?.bid || 0;
 
   // 새로운 바나나 분배 계산
-  const totalBananasToSecond = (newFirstPlaceBid - newSecondPlaceBid) * newSecondPlacePlayers.length;
-  const totalBananasToFirst = auctionItem - totalBananasToSecond;
-  const bananasToFirstPerPlayer = Math.floor(totalBananasToFirst / newFirstPlacePlayers.length);
   const bananasToSecondPerPlayer = newSecondPlacePlayers.length > 0 ? 
     Math.floor((newFirstPlaceBid - newSecondPlaceBid)) : 0;
+  const totalBananasToSecond = bananasToSecondPerPlayer * newSecondPlacePlayers.length;
+  const totalBananasToFirst = auctionItem;
+  const bananasToFirstPerPlayer = Math.floor(totalBananasToFirst / newFirstPlacePlayers.length);
 
   // 새로운 결과 생성
   const newResult: BidResult = {
@@ -135,7 +135,7 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
     
     // 새로운 1등 플레이어들 처리
     if (newResult.firstPlacePlayers.some(p => p.id === player.id)) {
-      newBananas = player.bananas + newResult.bananasToFirst;
+      newBananas = player.bananas + newResult.bananasToFirst - newResult.bananasToSecond;
       
       if (newBananas < 0) {
         newBananas = 0;
