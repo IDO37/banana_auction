@@ -55,7 +55,7 @@ export default function AuctionResults({
             </div>
             <div>
               <p className="text-gray-600">1등이 획득</p>
-              <p className="font-bold text-blue-600">+{result.bananasToFirst}개</p>
+              <p className="font-bold text-blue-600">+{result.bananasToFirst}개 (매물 전체)</p>
             </div>
           </div>
         </div>

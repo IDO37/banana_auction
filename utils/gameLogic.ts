@@ -1,12 +1,17 @@
 import { Player, GameState, BidResult } from '@/types/game';
 
 export const calculateAuctionItem = (players: Player[]): number => {
-  return Math.max(...players.map(p => p.bananas));
+  // 파산하지 않은 플레이어들 중에서 최대 바나나 개수
+  const activePlayers = players.filter(p => !p.isBankrupt);
+  if (activePlayers.length === 0) {
+    return 0; // 모든 플레이어가 파산한 경우
+  }
+  return Math.max(...activePlayers.map(p => p.bananas));
 };
 
-export const processBids = (players: Player[], auctionItem: number): BidResult => {
-  // 호가가 0이 아닌 플레이어들만 필터링
-  const activePlayers = players.filter(p => p.bid > 0);
+export const processBids = (players: Player[], auctionItem: number, currentRound: number): BidResult => {
+  // 호가가 0이 아니고 현재 라운드에서 파산하지 않은 플레이어들만 필터링
+  const activePlayers = players.filter(p => p.bid > 0 && !(p.isBankrupt && p.bankruptRound === currentRound));
   
   if (activePlayers.length === 0) {
     throw new Error('입찰한 플레이어가 없습니다.');
@@ -24,8 +29,8 @@ export const processBids = (players: Player[], auctionItem: number): BidResult =
   // 1등이 2등에게 줄 바나나 개수
   const bananasToSecond = firstPlaceBid - secondPlaceBid;
   
-  // 1등이 가져갈 바나나 개수
-  const bananasToFirst = auctionItem - bananasToSecond;
+  // 1등이 가져갈 바나나 개수 (매물 전체)
+  const bananasToFirst = auctionItem;
   
   return {
     firstPlace,
@@ -37,7 +42,7 @@ export const processBids = (players: Player[], auctionItem: number): BidResult =
   };
 };
 
-export const updatePlayerBananas = (players: Player[], result: BidResult): Player[] => {
+export const updatePlayerBananas = (players: Player[], result: BidResult, currentRound: number): Player[] => {
   return players.map(player => {
     let newBananas = player.bananas;
     
@@ -48,7 +53,7 @@ export const updatePlayerBananas = (players: Player[], result: BidResult): Playe
       // 파산 처리
       if (newBananas < 0) {
         newBananas = 0;
-        return { ...player, bananas: newBananas, isBankrupt: true };
+        return { ...player, bananas: newBananas, isBankrupt: true, bankruptRound: currentRound };
       }
     } else if (result.secondPlace && player.id === result.secondPlace.id) {
       // 2등 플레이어: 1등으로부터 (1등 호가 - 2등 호가) 받음
@@ -60,7 +65,21 @@ export const updatePlayerBananas = (players: Player[], result: BidResult): Playe
 };
 
 export const checkWinner = (players: Player[], targetBananas: number): Player | null => {
-  return players.find(player => player.bananas >= targetBananas) || null;
+  // 목표 바나나에 도달한 플레이어들 찾기
+  const qualifiedPlayers = players.filter(player => player.bananas >= targetBananas);
+  
+  if (qualifiedPlayers.length === 0) {
+    return null; // 목표 달성한 플레이어 없음
+  }
+  
+  if (qualifiedPlayers.length === 1) {
+    return qualifiedPlayers[0]; // 목표 달성한 플레이어가 1명
+  }
+  
+  // 목표 달성한 플레이어가 여러 명인 경우, 가장 많은 바나나를 가진 플레이어 선택
+  return qualifiedPlayers.reduce((winner, current) => 
+    current.bananas > winner.bananas ? current : winner
+  );
 };
 
 export const createInitialPlayers = (playerCount: number): Player[] => {

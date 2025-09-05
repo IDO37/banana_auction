@@ -4,6 +4,7 @@ export interface Player {
   bananas: number;
   bid: number;
   isBankrupt: boolean;
+  bankruptRound?: number; // 파산한 라운드 번호
 }
 
 export interface GameState {

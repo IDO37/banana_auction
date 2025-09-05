@@ -9,6 +9,7 @@ interface PlayerBiddingProps {
   onStartAuction: () => void;
   auctionItem: number;
   canStartAuction: boolean;
+  round: number;
 }
 
 export default function PlayerBidding({ 
@@ -17,13 +18,14 @@ export default function PlayerBidding({
   onNameChange,
   onStartAuction, 
   auctionItem,
-  canStartAuction 
+  canStartAuction,
+  round
 }: PlayerBiddingProps) {
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
       <div className="text-center mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          🍌 라운드 {players[0]?.bananas !== undefined ? Math.max(...players.map(p => p.bananas)) : 0} 바나나 경매
+          🍌 라운드 {round} 바나나 경매
         </h2>
         <p className="text-gray-600">
           매물: <span className="font-bold text-banana-600">{auctionItem}개</span> 바나나
@@ -45,6 +47,7 @@ export default function PlayerBidding({
                 type="text"
                 value={player.name}
                 onChange={(e) => onNameChange(player.id, e.target.value)}
+                onFocus={(e) => e.target.select()}
                 className="font-bold text-lg bg-transparent border-none outline-none focus:bg-white focus:border focus:border-gray-300 rounded px-1 py-1 w-full"
                 maxLength={10}
               />
@@ -69,10 +72,13 @@ export default function PlayerBidding({
                 onChange={(e) => onBidChange(player.id, parseInt(e.target.value) || 0)}
                 onFocus={(e) => e.target.select()}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-banana-500 focus:border-transparent"
-                disabled={player.isBankrupt}
+                disabled={player.isBankrupt && player.bankruptRound === round}
               />
-              {player.isBankrupt && (
-                <p className="text-xs text-red-500 mt-1">파산 상태입니다</p>
+              {player.isBankrupt && player.bankruptRound === round && (
+                <p className="text-xs text-red-500 mt-1">이번 라운드 파산 - 경매 제외</p>
+              )}
+              {player.isBankrupt && player.bankruptRound !== round && (
+                <p className="text-xs text-orange-500 mt-1">이전 라운드 파산 - 재참여 가능</p>
               )}
             </div>
           </div>

@@ -61,8 +61,8 @@ export default function BananaAuctionGame() {
 
   const startAuction = () => {
     try {
-      const result = processBids(gameState.players, gameState.auctionItem);
-      const updatedPlayers = updatePlayerBananas(gameState.players, result);
+      const result = processBids(gameState.players, gameState.auctionItem, gameState.round);
+      const updatedPlayers = updatePlayerBananas(gameState.players, result, gameState.round);
       const winner = checkWinner(updatedPlayers, gameState.targetBananas);
       
       setLastBidResult(result);
@@ -77,13 +77,25 @@ export default function BananaAuctionGame() {
       } else {
         // 다음 라운드 준비
         const newAuctionItem = calculateAuctionItem(updatedPlayers);
-        setGameState(prev => ({
-          ...prev,
-          players: updatedPlayers.map(p => ({ ...p, bid: 0 })),
-          round: prev.round + 1,
-          auctionItem: newAuctionItem,
-          gamePhase: 'results'
-        }));
+        
+        // 모든 플레이어가 파산한 경우 게임 종료
+        if (newAuctionItem === 0) {
+          const bankruptWinner = updatedPlayers.find(p => p.bananas > 0) || updatedPlayers[0];
+          setGameState(prev => ({
+            ...prev,
+            players: updatedPlayers,
+            gamePhase: 'finished',
+            winner: bankruptWinner
+          }));
+        } else {
+          setGameState(prev => ({
+            ...prev,
+            players: updatedPlayers.map(p => ({ ...p, bid: 0 })),
+            round: prev.round + 1,
+            auctionItem: newAuctionItem,
+            gamePhase: 'results'
+          }));
+        }
       }
     } catch (error) {
       alert(error instanceof Error ? error.message : '경매 처리 중 오류가 발생했습니다.');
@@ -110,7 +122,9 @@ export default function BananaAuctionGame() {
     setLastBidResult(null);
   };
 
-  const canStartAuction = gameState.players.some(player => player.bid > 0);
+  const canStartAuction = gameState.players.some(player => 
+    player.bid > 0 && !(player.isBankrupt && player.bankruptRound === gameState.round)
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-banana-50 to-banana-100 py-8">
@@ -127,6 +141,7 @@ export default function BananaAuctionGame() {
             onStartAuction={startAuction}
             auctionItem={gameState.auctionItem}
             canStartAuction={canStartAuction}
+            round={gameState.round}
           />
         )}
 
@@ -144,6 +159,7 @@ export default function BananaAuctionGame() {
           <GameFinished
             winner={gameState.winner}
             players={gameState.players}
+            targetBananas={gameState.targetBananas}
             onNewGame={newGame}
           />
         )}

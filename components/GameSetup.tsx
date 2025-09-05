@@ -33,6 +33,7 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
             max="10"
             value={playerCount}
             onChange={(e) => setPlayerCount(parseInt(e.target.value) || 2)}
+            onFocus={(e) => e.target.select()}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-banana-500 focus:border-transparent"
             required
           />
@@ -49,6 +50,7 @@ export default function GameSetup({ onStartGame }: GameSetupProps) {
             min="10"
             value={targetBananas}
             onChange={(e) => setTargetBananas(parseInt(e.target.value) || 50)}
+            onFocus={(e) => e.target.select()}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-banana-500 focus:border-transparent"
             required
           />
