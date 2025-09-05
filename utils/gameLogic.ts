@@ -131,11 +131,21 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
       return player;
     }
     
-    let newBananas = player.bananas;
+    // 원래 바나나 개수로 되돌리기 (첫 번째 계산 결과를 취소)
+    let originalBananas = player.bananas;
+    
+    // 첫 번째 계산에서 받은 바나나를 되돌리기
+    if (originalResult.firstPlacePlayers.some(p => p.id === player.id)) {
+      originalBananas = player.bananas - originalResult.bananasToFirst + originalResult.bananasToSecond;
+    } else if (originalResult.secondPlacePlayers.some(p => p.id === player.id)) {
+      originalBananas = player.bananas - originalResult.bananasToSecond;
+    }
+    
+    let newBananas = originalBananas;
     
     // 새로운 1등 플레이어들 처리
     if (newResult.firstPlacePlayers.some(p => p.id === player.id)) {
-      newBananas = player.bananas + newResult.bananasToFirst - newResult.bananasToSecond;
+      newBananas = originalBananas + newResult.bananasToFirst - newResult.bananasToSecond;
       
       if (newBananas <= 0) {
         newBananas = 0;
@@ -144,7 +154,7 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
     } 
     // 새로운 2등 플레이어들 처리
     else if (newResult.secondPlacePlayers.some(p => p.id === player.id)) {
-      newBananas = player.bananas + newResult.bananasToSecond;
+      newBananas = originalBananas + newResult.bananasToSecond;
     }
     
     return { ...player, bananas: newBananas };
