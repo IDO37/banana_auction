@@ -27,8 +27,8 @@ export const processBids = (players: Player[], auctionItem: number, currentRound
   
   // 공동 1등을 제외한 플레이어들 중에서 2등 찾기
   const remainingPlayers = sortedPlayers.filter(p => p.bid !== firstPlaceBid);
-  const secondPlacePlayers = remainingPlayers.filter(p => p.bid > 0);
-  const secondPlaceBid = secondPlacePlayers[0]?.bid || 0;
+  const secondPlaceBid = remainingPlayers[0]?.bid || 0;
+  const secondPlacePlayers = remainingPlayers.filter(p => p.bid === secondPlaceBid);
   
   // 1등이 2등에게 줄 바나나 개수 (각자)
   const bananasToSecondPerPlayer = secondPlacePlayers.length > 0 ? 
@@ -64,8 +64,8 @@ export const updatePlayerBananas = (players: Player[], result: BidResult, curren
       // 1등 플레이어: 매물을 가져가고 2등에게 호가 차이만큼 줌
       newBananas = player.bananas + result.bananasToFirst - result.bananasToSecond;
       
-      // 파산 처리 (음수일 때만 파산 처리, 0은 정상)
-      if (newBananas < 0) {
+      // 파산 처리 (0 이하일 때 파산 처리)
+      if (newBananas <= 0) {
         newBananas = 0;
         return { ...player, bananas: newBananas, isBankrupt: true, bankruptRound: currentRound };
       }
@@ -102,8 +102,8 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
   const newFirstPlaceBid = sortedPlayers[0].bid;
   const newFirstPlacePlayers = sortedPlayers.filter(p => p.bid === newFirstPlaceBid);
   const remainingPlayers = sortedPlayers.filter(p => p.bid !== newFirstPlaceBid);
-  const newSecondPlacePlayers = remainingPlayers.filter(p => p.bid > 0);
-  const newSecondPlaceBid = newSecondPlacePlayers[0]?.bid || 0;
+  const newSecondPlaceBid = remainingPlayers[0]?.bid || 0;
+  const newSecondPlacePlayers = remainingPlayers.filter(p => p.bid === newSecondPlaceBid);
 
   // 새로운 바나나 분배 계산
   const bananasToSecondPerPlayer = newSecondPlacePlayers.length > 0 ? 
@@ -137,7 +137,7 @@ export const recalculateAuctionAfterBankruptcy = (players: Player[], originalRes
     if (newResult.firstPlacePlayers.some(p => p.id === player.id)) {
       newBananas = player.bananas + newResult.bananasToFirst - newResult.bananasToSecond;
       
-      if (newBananas < 0) {
+      if (newBananas <= 0) {
         newBananas = 0;
         return { ...player, bananas: newBananas, isBankrupt: true, bankruptRound: currentRound };
       }
