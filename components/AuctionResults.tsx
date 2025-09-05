@@ -36,9 +36,6 @@ export default function AuctionResults({
                 <p className="font-bold text-banana-600">
                   {player.name}: {result.firstPlaceBid}개
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
-                  바나나: {player.bananas - result.bananasToFirst + result.bananasToSecond}개 → {player.bananas}개
-                </p>
               </div>
             ))}
           </div>
@@ -52,9 +49,6 @@ export default function AuctionResults({
                   <p className="font-bold text-banana-600">
                     {player.name}: {result.secondPlaceBid}개
                   </p>
-                  <p className="text-xs text-gray-500 mt-1">
-                    바나나: {player.bananas - result.bananasToSecond}개 → {player.bananas}개
-                  </p>
                 </div>
               ))}
             </div>
@@ -62,11 +56,7 @@ export default function AuctionResults({
         </div>
         
         <div className="mt-4 pt-4 border-t border-banana-200">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
-            <div>
-              <p className="text-gray-600">이번 라운드 매물</p>
-              <p className="font-bold">{auctionItem}개</p>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
               <p className="text-gray-600">2등에게 지급</p>
               <p className="font-bold text-green-600">+{result.bananasToSecond}개</p>
