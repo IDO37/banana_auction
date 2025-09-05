@@ -8,7 +8,7 @@ interface GameSetupProps {
 
 export default function GameSetup({ onStartGame }: GameSetupProps) {
   const [playerCount, setPlayerCount] = useState(2);
-  const [targetBananas, setTargetBananas] = useState(50);
+  const [targetBananas, setTargetBananas] = useState(200);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

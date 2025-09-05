@@ -18,7 +18,7 @@ export default function BananaAuctionGame() {
   const [gameState, setGameState] = useState<GameState>({
     players: [],
     round: 0,
-    targetBananas: 50,
+    targetBananas: 200,
     gamePhase: 'setup',
     winner: null,
     auctionItem: 0
@@ -46,6 +46,15 @@ export default function BananaAuctionGame() {
       ...prev,
       players: prev.players.map(player => 
         player.id === playerId ? { ...player, bid } : player
+      )
+    }));
+  };
+
+  const handleNameChange = (playerId: string, name: string) => {
+    setGameState(prev => ({
+      ...prev,
+      players: prev.players.map(player => 
+        player.id === playerId ? { ...player, name: name.trim() || `플레이어 ${player.id.split('-')[1]}` } : player
       )
     }));
   };
@@ -93,7 +102,7 @@ export default function BananaAuctionGame() {
     setGameState({
       players: [],
       round: 0,
-      targetBananas: 50,
+      targetBananas: 200,
       gamePhase: 'setup',
       winner: null,
       auctionItem: 0
@@ -114,6 +123,7 @@ export default function BananaAuctionGame() {
           <PlayerBidding
             players={gameState.players}
             onBidChange={handleBidChange}
+            onNameChange={handleNameChange}
             onStartAuction={startAuction}
             auctionItem={gameState.auctionItem}
             canStartAuction={canStartAuction}

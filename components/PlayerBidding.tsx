@@ -5,6 +5,7 @@ import { Player } from '@/types/game';
 interface PlayerBiddingProps {
   players: Player[];
   onBidChange: (playerId: string, bid: number) => void;
+  onNameChange: (playerId: string, name: string) => void;
   onStartAuction: () => void;
   auctionItem: number;
   canStartAuction: boolean;
@@ -13,6 +14,7 @@ interface PlayerBiddingProps {
 export default function PlayerBidding({ 
   players, 
   onBidChange, 
+  onNameChange,
   onStartAuction, 
   auctionItem,
   canStartAuction 
@@ -38,10 +40,16 @@ export default function PlayerBidding({
                 : 'border-gray-200 bg-gray-50'
             }`}
           >
-            <h3 className="font-bold text-lg mb-2">
-              {player.name}
-              {player.isBankrupt && <span className="text-red-500 ml-2">(파산)</span>}
-            </h3>
+            <div className="mb-2">
+              <input
+                type="text"
+                value={player.name}
+                onChange={(e) => onNameChange(player.id, e.target.value)}
+                className="font-bold text-lg bg-transparent border-none outline-none focus:bg-white focus:border focus:border-gray-300 rounded px-1 py-1 w-full"
+                maxLength={10}
+              />
+              {player.isBankrupt && <span className="text-red-500 text-sm">(파산)</span>}
+            </div>
             
             <div className="mb-3">
               <span className="text-sm text-gray-600">보유 바나나: </span>
@@ -59,6 +67,7 @@ export default function PlayerBidding({
                 max={player.bananas}
                 value={player.bid}
                 onChange={(e) => onBidChange(player.id, parseInt(e.target.value) || 0)}
+                onFocus={(e) => e.target.select()}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-banana-500 focus:border-transparent"
                 disabled={player.isBankrupt}
               />

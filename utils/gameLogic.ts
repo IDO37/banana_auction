@@ -42,7 +42,7 @@ export const updatePlayerBananas = (players: Player[], result: BidResult): Playe
     let newBananas = player.bananas;
     
     if (player.id === result.firstPlace.id) {
-      // 1등 플레이어
+      // 1등 플레이어: 매물 바나나를 가져가고 2등에게 차이만큼 지급
       newBananas = player.bananas - result.bananasToSecond + result.bananasToFirst;
       
       // 파산 처리
@@ -51,7 +51,7 @@ export const updatePlayerBananas = (players: Player[], result: BidResult): Playe
         return { ...player, bananas: newBananas, isBankrupt: true };
       }
     } else if (result.secondPlace && player.id === result.secondPlace.id) {
-      // 2등 플레이어
+      // 2등 플레이어: 1등으로부터 (1등 호가 - 2등 호가) 받음
       newBananas = player.bananas + result.bananasToSecond;
     }
     
