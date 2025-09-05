@@ -24,12 +24,16 @@ export default function PlayerBidding({
   return (
     <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg p-6">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-800 mb-2">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
           🍌 라운드 {round} 바나나 경매
         </h2>
-        <p className="text-gray-600">
-          매물: <span className="font-bold text-banana-600">{auctionItem}개</span> 바나나
-        </p>
+        <div className="bg-banana-100 border-2 border-banana-300 rounded-lg p-4 mb-4">
+          <p className="text-lg text-gray-700 mb-2">이번 라운드 매물</p>
+          <p className="text-4xl font-bold text-banana-600">
+            {auctionItem}개
+          </p>
+          <p className="text-sm text-gray-600 mt-1">바나나</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
