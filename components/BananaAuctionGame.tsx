@@ -185,7 +185,7 @@ export default function BananaAuctionGame() {
         )}
 
         {/* 게임 정보 표시 */}
-        {gameState.gamePhase !== 'setup' && (
+        {gameState.gamePhase !== 'setup' && gameState.gamePhase !== 'finished' && (
           <div className="mt-6 text-center">
             <div className="inline-flex items-center space-x-4 bg-white rounded-lg shadow-md px-6 py-3">
               <div>
